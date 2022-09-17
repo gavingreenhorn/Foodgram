@@ -1,16 +1,76 @@
+import os
+import re
+import csv
+from http import HTTPStatus
+
+from django.conf import settings
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import get_user_model
-from rest_framework import status
+from rest_framework import status, serializers
 from rest_framework import viewsets, mixins, filters, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
+from django.db import IntegrityError
 
+from djoser.views import UserViewSet
 from recipes.models import Favorite, Recipe, Ingredient, Tag
-from .serializers import IngredientSerializer, TagSerializer, RecipeShortSerializer, RecipeSerializer
+from .serializers import IngredientSerializer, TagSerializer, RecipeShortSerializer, RecipeSerializer, FoodgramUserSerializer, SubscriptionSerializer
 from .filters import IngredientFilterSet, RecipeFilterSet
 
 User = get_user_model()
+
+ERR_NAME = re.compile(r'(?<=: ).*$')
+
+
+class FoodgramUsersViewset(UserViewSet):
+
+    def get_serializer_class(self, *args, **kwargs):
+        if self.action in ('subscribe', 'subscriptions'):
+            return SubscriptionSerializer
+        return super().get_serializer_class()
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        if self.action == 'subscribe':
+            context.setdefault('object', self.get_object())
+        return context
+
+    def get_queryset(self):
+        if self.action == 'subscriptions':
+            return self.request.user.subscriptions.all()
+        return super().get_queryset()
+
+    def create_sub(self, *args, **kwargs):
+        return self.request.user.subscriptions.add(self.get_object())
+
+    def remove_sub(self, *args, **kwargs):
+        self.request.user.subscriptions.remove(self.get_object())
+
+    @action(detail=True, methods=['post', 'delete'],
+            permission_classes=[permissions.IsAuthenticated])
+    def subscribe(self, request, *args, **kwargs):
+        if request.method == "POST":
+            self.perform_create = self.create_sub
+            try:
+                return self.create(request, *args, **kwargs)
+            except IntegrityError as ex:
+                detail = str(ex)
+                if str(ex).startswith('UNIQUE'):
+                    detail = 'Already subscribed'
+                elif str(ex).startswith('CHECK'):
+                    detail = ERR_NAME.search(str(ex)).group(0)
+                raise serializers.ValidationError(
+                    detail=detail,
+                    code=HTTPStatus.BAD_REQUEST
+                )
+        self.perform_destroy = self.remove_sub
+        return self.destroy(request, *args, **kwargs)
+
+    @action(detail=False, methods=['get'],
+            permission_classes=[permissions.IsAuthenticated])
+    def subscriptions(self, request, *args, **kwargs):
+        return self.list(self, request, *args, **kwargs)
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
@@ -46,6 +106,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
         context.update({"request": self.request})
         return context
 
+    def get_queryset(self):
+        if self.action == 'download_shopping_cart':
+            return self.request.user.cart.all()
+        return super().get_queryset()
+
     def make_favorite(self, *args, **kwargs):
         return self.request.user.favorites.add(self.get_object())
 
@@ -75,3 +140,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return self.create(request, *args, **kwargs)
         self.perform_destroy = self.remove_from_cart
         return self.destroy(request, *args, **kwargs)
+
+    @action(detail=False, methods=['get'],
+            permission_classes=[permissions.IsAuthenticated])
+    def download_shopping_cart(self, request, *args, **kwargs):
+        response = self.list(self, request, *args, **kwargs)
+        ingredients = ((component.ingredient.name, component.amount)
+                        for recipe in self.get_queryset()
+                        for component in recipe.components.all())
+        print(ingredients)
+        return response

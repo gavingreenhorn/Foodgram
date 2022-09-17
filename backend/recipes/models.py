@@ -1,8 +1,5 @@
-from slugify import slugify as pyslugify
-
 from django.db import models
 from django.contrib.auth import get_user_model
-from autoslug import AutoSlugField
 
 User = get_user_model()
 
@@ -13,6 +10,7 @@ class Recipe(models.Model):
         blank=False)
     author = models.ForeignKey(
         User,
+        related_name='recipes',
         on_delete=models.CASCADE)
     text = models.TextField()
     cooking_time = models.IntegerField()

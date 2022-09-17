@@ -1,17 +1,6 @@
-from rest_framework.filters import SearchFilter
-from urllib.parse import unquote
 from django_filters import rest_framework as filters
 
 from recipes.models import Ingredient, Recipe
-
-
-class Klyukva(SearchFilter):
-    def get_search_terms(self, request):
-        params = request.query_params.get(self.search_param, '')
-        params = params.replace('\x00', '')
-        params = params.replace(',', ' ')
-        params = unquote(params)
-        return params.split()
 
 
 class IngredientFilterSet(filters.FilterSet):
