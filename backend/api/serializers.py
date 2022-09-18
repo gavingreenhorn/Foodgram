@@ -1,3 +1,4 @@
+from multiprocessing import context
 from django.contrib.auth import get_user_model
 from djoser.serializers import UserSerializer
 from rest_framework import serializers
@@ -23,6 +24,7 @@ class FoodgramUserSerializer(UserSerializer):
         data = super().to_representation(instance)
         del data['password']
         return data
+
 
 class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
@@ -117,6 +119,11 @@ class SubscriptionSerializer(FoodgramUserSerializer):
             'username', 'first_name', 'last_name', 'email')
 
     def to_representation(self, instance):
-        if self.context['request'].method in ('POST', 'DELETE'):
+        request = self.context['request']
+        if request.method in ('POST', 'DELETE'):
             instance = self.context['object']
-        return super().to_representation(instance)
+        data = super().to_representation(instance)
+        if request.method == 'GET' and (cap := request.query_params.get(
+            'recipes_limit', None)):
+            data['recipes'] = data['recipes'][:int(cap)]
+        return data

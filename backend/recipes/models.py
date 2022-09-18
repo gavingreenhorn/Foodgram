@@ -21,6 +21,9 @@ class Recipe(models.Model):
         related_name='recipes')
     image = models.ImageField(upload_to='recipes/images/')
 
+    class Meta:
+        ordering = ['-id']
+
 
 class Tag(models.Model):
     name = models.CharField(max_length=25, unique=True)

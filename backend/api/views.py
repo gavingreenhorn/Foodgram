@@ -1,9 +1,12 @@
+from http.client import HTTPResponse
 import os
 import re
 import csv
+import tempfile
 from http import HTTPStatus
 
 from django.conf import settings
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import get_user_model
 from rest_framework import status, serializers
@@ -144,9 +147,15 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'],
             permission_classes=[permissions.IsAuthenticated])
     def download_shopping_cart(self, request, *args, **kwargs):
-        response = self.list(self, request, *args, **kwargs)
         ingredients = ((component.ingredient.name, component.amount)
                         for recipe in self.get_queryset()
                         for component in recipe.components.all())
-        print(ingredients)
+        response = HttpResponse(
+            content_type='text/csv',
+            headers={'Content-Disposition': f'attachment; filename="shopping_list.csv"'},
+        )
+        writer = csv.writer(response)
+        writer.writerow(('ingredient', 'amount'))
+        for ingredient in ingredients:
+            writer.writerow(ingredient)
         return response
