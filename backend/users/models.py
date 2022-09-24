@@ -6,7 +6,10 @@ from .managers import FoodgramUserManager
 
 
 class FoodgramUser(AbstractUser, PermissionsMixin):
-    email = models.EmailField(max_length=254, verbose_name='email', unique=True)
+    email = models.EmailField(
+        max_length=254,
+        verbose_name='email',
+        unique=True)
     first_name = models.CharField(max_length=150, blank=False)
     last_name = models.CharField(max_length=150, blank=False)
     favorites = models.ManyToManyField(
@@ -24,7 +27,7 @@ class FoodgramUser(AbstractUser, PermissionsMixin):
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name', 'password']
 
     def __str__(self):
-        return f'{self.first_name} {self.last_name}'
+        return self.username
 
     class Meta:
         ordering = ['username']

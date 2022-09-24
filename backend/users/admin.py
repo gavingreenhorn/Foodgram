@@ -27,7 +27,9 @@ class FoodgramUserAdmin(UserAdmin):
             None,
             {
                 "classes": ("wide",),
-                "fields": ("username", "first_name", "last_name", "email", "password1", "password2", "is_active"),
+                "fields": (
+                    "username", "first_name", "last_name",
+                    "email", "password1", "password2", "is_active"),
             },
         ),
     )

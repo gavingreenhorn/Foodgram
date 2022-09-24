@@ -1,9 +1,20 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import Group
+from django.db import IntegrityError
 
 
 class FoodgramUserManager(BaseUserManager):
     """Ensure all required fields for programmatic objects creation"""
+
+    def create(self, **kwargs):
+        return self.create_user(**kwargs)
+
+    def get_or_create(self, **kwargs):
+        try:
+            return self.create(**kwargs)
+        except IntegrityError:
+            print(f'User {kwargs["username"]} exists')
+
     def create_user(self, username, first_name, last_name,
                     email, password, **extra_fields):
         if not username:
@@ -21,16 +32,13 @@ class FoodgramUserManager(BaseUserManager):
             last_name=last_name,
             email=email,
             **extra_fields)
-        if extra_fields.get('is_staff'):
-            user.groups.add(Group.objects.get(name='admin'))
         user.set_password(password)
         user.save()
+        if extra_fields.get('is_staff'):
+            user.groups.add(Group.objects.get(name='admin'))
         return user
 
-    def create(self, **kwargs):
-        self.create_user(**kwargs)
-
-    def create_superuser(self, username, first_name, last_name, 
+    def create_superuser(self, username, first_name, last_name,
                          email, password, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)

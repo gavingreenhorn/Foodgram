@@ -10,7 +10,9 @@ from django.db import IntegrityError
 
 from djoser.views import UserViewSet
 from recipes.models import Recipe, Ingredient, Tag
-from .serializers import IngredientSerializer, TagSerializer, RecipeShortSerializer, RecipeSerializer, SubscriptionSerializer
+from .serializers import (IngredientSerializer, TagSerializer,
+                          RecipeShortSerializer, RecipeSerializer,
+                          SubscriptionSerializer)
 from .filters import IngredientFilterSet, RecipeFilterSet
 
 User = get_user_model()
@@ -92,7 +94,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if self.action in ('favorite', 'shopping_cart'):
             return RecipeShortSerializer
         return RecipeSerializer
-        
+
     def get_serializer(self, *args, **kwargs):
         if self.action in ('favorite', 'shopping_cart'):
             kwargs.setdefault('instance', self.get_object())
@@ -142,11 +144,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
             permission_classes=[permissions.IsAuthenticated])
     def download_shopping_cart(self, request, *args, **kwargs):
         ingredients = ((component.ingredient.name, component.amount)
-                        for recipe in self.get_queryset()
-                        for component in recipe.components.all())
+                       for recipe in self.get_queryset()
+                       for component in recipe.components.all())
         response = HttpResponse(
             content_type='text/csv',
-            headers={'Content-Disposition': f'attachment; filename="shopping_list.csv"'},
+            headers={
+                'Content-Disposition':
+                    'attachment; filename="shopping_list.csv"'
+            },
         )
         writer = csv.writer(response)
         writer.writerow(('ingredient', 'amount'))

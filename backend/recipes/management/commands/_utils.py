@@ -24,13 +24,14 @@ def set_by_id(payload: Dict, field: AnyStr) -> None:
 
 
 def load_model_data(
-    app_label, headers, source, modelname, related_field=None) -> None:
+        app_label, headers, source, modelname, related_field=None) -> None:
     """Get data from csv source, create model instances from it"""
     data = get_csv_data(source=source, headers=headers)
-    print(data)
     model = apps.get_model(app_label, modelname)
     for payload in data:
         if related_field:
             set_by_id(payload, related_field)
         if not model.objects.filter(**payload).exists():
+            if modelname == 'FoodgramUser':
+                payload['is_staff'] = bool(payload['is_staff'])
             model.objects.get_or_create(**payload)

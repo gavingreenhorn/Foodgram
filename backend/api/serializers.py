@@ -1,4 +1,3 @@
-from multiprocessing import context
 from django.contrib.auth import get_user_model
 from djoser.serializers import UserSerializer
 from rest_framework import serializers
@@ -18,7 +17,7 @@ class FoodgramUserSerializer(UserSerializer):
         read_only_fields = ('is_subscribed',)
 
     def get_is_subscribed(self, obj):
-        return (self.context['request'].user.is_authenticated and 
+        return (self.context['request'].user.is_authenticated and
                 obj in self.context['request'].user.subscriptions.all())
 
     def to_representation(self, instance):
@@ -43,7 +42,7 @@ class TagField(serializers.PrimaryKeyRelatedField):
     class Meta:
         model = Tag
         fields = '__all__'
-    
+
     def to_representation(self, instance):
         return TagSerializer(instance).data
 
@@ -56,7 +55,22 @@ class ComponentSerializer(serializers.ModelSerializer):
         read_only_fields = ('recipe',)
 
     def to_representation(self, instance):
-        return {'id': instance.ingredient_id, 'amount': instance.amount}
+        return {
+            'id': instance.ingredient.id,
+            'name': instance.ingredient.name,
+            'measurement_unit': instance.ingredient.measurement_unit,
+            'amount': instance.amount}
+
+    def to_internal_value(self, data):
+        data['ingredient'] = data.pop('id')
+        return super().to_internal_value(data)
+
+    def validate_amount(self, value):
+        try:
+            value = int(value)
+        except Exception:
+            raise serializers.ValidationError("Non-digit value")
+        return value
 
 
 class RecipeSerializer(serializers.ModelSerializer):
@@ -126,6 +140,6 @@ class SubscriptionSerializer(FoodgramUserSerializer):
             instance = self.context['object']
         data = super().to_representation(instance)
         if request.method == 'GET' and (cap := request.query_params.get(
-            'recipes_limit', None)):
+                'recipes_limit', None)):
             data['recipes'] = data['recipes'][:int(cap)]
         return data

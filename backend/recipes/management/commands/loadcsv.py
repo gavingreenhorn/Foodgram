@@ -10,7 +10,7 @@ APP_NAME = basename(dirname(
 FILES = {
     'ingredients': (APP_NAME, ('name', 'measurement_unit')),
     'tags': (APP_NAME, ('name', 'color', 'slug')),
-    'users': ('users', ('username', 'first_name', 'last_name', 'email', 'password'))
+    'users': ('users', ('username', 'first_name', 'last_name', 'email', 'password', 'is_staff'))
 }
 
 

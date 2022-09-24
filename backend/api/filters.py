@@ -17,7 +17,7 @@ class RecipeFilterSet(filters.FilterSet):
     is_favorited = filters.BooleanFilter(method='is_favorited_filter')
     is_in_shopping_cart = filters.BooleanFilter(
         method='is_in_shopping_cart_filter')
-    
+
     def is_favorited_filter(self, queryset, name, value):
         if value == 1:
             queryset = queryset.filter(favorite__enjoyer=self.request.user)

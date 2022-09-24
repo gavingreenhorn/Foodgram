@@ -17,7 +17,8 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField(
         to='Ingredient',
         through='Component')
-    tags = models.ManyToManyField('Tag',
+    tags = models.ManyToManyField(
+        'Tag',
         related_name='recipes')
     image = models.ImageField(upload_to='recipes/images/')
 
@@ -30,6 +31,9 @@ class Tag(models.Model):
     color = models.CharField(max_length=7, unique=True)
     slug = models.SlugField(max_length=25, unique=True)
 
+    def __str__(self) -> str:
+        return self.name
+
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=100)
@@ -37,6 +41,9 @@ class Ingredient(models.Model):
 
     class Meta:
         ordering = ['name']
+
+    def __str__(self) -> str:
+        return self.name
 
 
 class Favorite(models.Model):
