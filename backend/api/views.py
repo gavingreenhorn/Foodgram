@@ -1,24 +1,16 @@
-from http.client import HTTPResponse
-import os
 import re
 import csv
-import tempfile
 from http import HTTPStatus
 
-from django.conf import settings
 from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import get_user_model
-from rest_framework import status, serializers
-from rest_framework import viewsets, mixins, filters, permissions
-from rest_framework.response import Response
+from rest_framework import serializers, viewsets, permissions
 from rest_framework.decorators import action
-from django_filters.rest_framework import DjangoFilterBackend
 from django.db import IntegrityError
 
 from djoser.views import UserViewSet
-from recipes.models import Favorite, Recipe, Ingredient, Tag
-from .serializers import IngredientSerializer, TagSerializer, RecipeShortSerializer, RecipeSerializer, FoodgramUserSerializer, SubscriptionSerializer
+from recipes.models import Recipe, Ingredient, Tag
+from .serializers import IngredientSerializer, TagSerializer, RecipeShortSerializer, RecipeSerializer, SubscriptionSerializer
 from .filters import IngredientFilterSet, RecipeFilterSet
 
 User = get_user_model()
@@ -80,6 +72,7 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes = [permissions.AllowAny]
+    pagination_class = None
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
@@ -87,6 +80,7 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [permissions.AllowAny]
     serializer_class = IngredientSerializer
     filterset_class = IngredientFilterSet
+    pagination_class = None
 
 
 class RecipeViewSet(viewsets.ModelViewSet):

@@ -4,6 +4,7 @@ from djoser.serializers import UserSerializer
 from rest_framework import serializers
 
 from recipes.models import Recipe, Ingredient, Component, Tag
+from .fields import Base64ImageField
 
 User = get_user_model()
 
@@ -64,6 +65,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     ingredients = ComponentSerializer(many=True, source="components")
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
+    image = Base64ImageField()
 
     def get_is_favorited(self, obj):
         user = self.context['request'].user
@@ -76,7 +78,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = '__all__'
-        read_only_fields = ('image', 'is_favorited', 'is_in_shopping_cart')
+        read_only_fields = ('is_favorited', 'is_in_shopping_cart')
 
     def create(self, validated_data):
         components = validated_data.pop("components")

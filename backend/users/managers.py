@@ -1,4 +1,5 @@
 from django.contrib.auth.base_user import BaseUserManager
+from django.contrib.auth.models import Group
 
 
 class FoodgramUserManager(BaseUserManager):
@@ -20,6 +21,8 @@ class FoodgramUserManager(BaseUserManager):
             last_name=last_name,
             email=email,
             **extra_fields)
+        if extra_fields.get('is_staff'):
+            user.groups.add(Group.objects.get(name='admin'))
         user.set_password(password)
         user.save()
         return user

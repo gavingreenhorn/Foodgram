@@ -2,15 +2,20 @@ version: '3.3'
 services:
 
   frontend:
+    container_name: foodgram_front
     build:
       context: ../frontend
       dockerfile: Dockerfile
     volumes:
       - ../frontend/:/app/result_build/
   nginx:
+    container_name: foodgram_nginx
     image: nginx:1.19.3
+    # network_mode: host
+    extra_hosts:
+     - "host.docker.internal:host-gateway"
     ports:
-      - "80:80"
+     - "80:80"
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
       - ../frontend/build:/usr/share/nginx/html/

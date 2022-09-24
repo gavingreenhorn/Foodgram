@@ -1,11 +1,11 @@
 from django.db import models
 from django.db.models import F, Q
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, PermissionsMixin
 
 from .managers import FoodgramUserManager
 
 
-class FoodgramUser(AbstractUser):
+class FoodgramUser(AbstractUser, PermissionsMixin):
     email = models.EmailField(max_length=254, verbose_name='email', unique=True)
     first_name = models.CharField(max_length=150, blank=False)
     last_name = models.CharField(max_length=150, blank=False)
