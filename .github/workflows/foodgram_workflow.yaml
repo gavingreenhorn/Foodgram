@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.7", "3.8", "3.9"]
+        python-version: ["3.8", "3.9", "3.10"]
 
     steps:
       - uses: actions/checkout@v2
@@ -81,7 +81,7 @@ jobs:
       - name: Copy compose file
         uses: garygrossgarten/github-action-scp@release
         with:
-          local: infra/docker-compose.yaml
+          local: infra/docker-compose.yml
           remote: foodgram_compose.yaml
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
