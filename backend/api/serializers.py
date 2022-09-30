@@ -67,10 +67,9 @@ class ComponentSerializer(serializers.ModelSerializer):
 
     def validate_amount(self, value):
         try:
-            value = int(value)
+            return int(value)
         except Exception:
             raise serializers.ValidationError("Non-digit value")
-        return value
 
 
 class RecipeSerializer(serializers.ModelSerializer):

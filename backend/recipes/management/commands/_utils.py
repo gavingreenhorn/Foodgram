@@ -42,9 +42,8 @@ def load_model_data(
 def get_image(path: str) -> SimpleUploadedFile:
     """Get an image reference for a django image field"""
     with open(path, "rb") as f:
-        file = SimpleUploadedFile(
+        return SimpleUploadedFile(
             name=path,
             content=f.read(),
             content_type='image/jpg'
         )
-        return file
