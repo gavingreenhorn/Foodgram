@@ -1,4 +1,3 @@
-
 from django.contrib import admin, auth
 from django.contrib.auth.admin import UserAdmin
 

@@ -1,12 +1,13 @@
 import csv
 import os
-from typing import AnyStr, Dict, List
+from typing import AnyStr, Dict, List, Tuple
 
 from django.apps import apps
 from django.conf import settings
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 
-def get_csv_data(source, headers) -> List[Dict]:
+def get_csv_data(source: str, headers: Tuple) -> List[Dict]:
     """Load test data from csv as python dict."""
     with open(
         os.path.join(
@@ -24,7 +25,8 @@ def set_by_id(payload: Dict, field: AnyStr) -> None:
 
 
 def load_model_data(
-        app_label, headers, source, modelname, related_field=None) -> None:
+        app_label: str, headers: Tuple, source: str, modelname: str,
+        related_field: str = None) -> None:
     """Get data from csv source, create model instances from it"""
     data = get_csv_data(source=source, headers=headers)
     model = apps.get_model(app_label, modelname)
@@ -35,3 +37,14 @@ def load_model_data(
             if modelname == 'FoodgramUser':
                 payload['is_staff'] = bool(payload['is_staff'])
             model.objects.get_or_create(**payload)
+
+
+def get_image(path: str) -> SimpleUploadedFile:
+    """Get an image reference for a django image field"""
+    with open(path, "rb") as f:
+        file = SimpleUploadedFile(
+            name=path,
+            content=f.read(),
+            content_type='image/jpg'
+        )
+        return file

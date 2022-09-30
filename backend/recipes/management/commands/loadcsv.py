@@ -10,7 +10,9 @@ APP_NAME = basename(dirname(
 FILES = {
     'ingredients': (APP_NAME, ('name', 'measurement_unit')),
     'tags': (APP_NAME, ('name', 'color', 'slug')),
-    'users': ('users', ('username', 'first_name', 'last_name', 'email', 'password', 'is_staff'))
+    'users': ('users', (
+        'username', 'first_name', 'last_name',
+        'email', 'password', 'is_staff'))
 }
 
 
@@ -36,4 +38,3 @@ class Command(BaseCommand):
         else:
             self.stdout.write(self.style.SUCCESS(
                 'Successfully loaded "%s" data' % options['modelname']))
-    
