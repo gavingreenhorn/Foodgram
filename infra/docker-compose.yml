@@ -11,7 +11,7 @@ services:
 
   food_backend:
     container_name: food_backend
-    image: foodgram_backend:latest
+    image: foodgram_back:latest
     restart: always
     volumes:
       - static_data:/app/static/
@@ -23,7 +23,7 @@ services:
 
   food_frontend:
     container_name: food_frontend
-    image: foodgram_frontend:latest
+    image: foodgram_front:latest
     # build:
     #   context: ../frontend
     #   dockerfile: Dockerfile
