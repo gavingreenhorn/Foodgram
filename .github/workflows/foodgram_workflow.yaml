@@ -118,7 +118,7 @@ jobs:
             echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
             
             sudo docker-compose -f ${{ env.COMPOSE_FILE }} pull foodgram_back
-            sudo docker-compose -f ${{ env.COMPOSE_FILE }} up -d
+            sudo docker-compose -f ${{ env.COMPOSE_FILE }} up -d --build foodgram_back
             sudo docker cp foodgram_data/. food_backend:/app/static/
             sudo docker exec food_backend python manage.py makemigrations
             sudo docker exec food_backend python manage.py migrate --verbosity 2
