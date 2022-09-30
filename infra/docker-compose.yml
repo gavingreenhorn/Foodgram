@@ -12,7 +12,7 @@ services:
   food_backend:
     container_name: food_backend
     image: foodgram_backend:latest
-    # restart: always
+    restart: always
     volumes:
       - static_data:/app/static/
       - media_data:/app/media/
