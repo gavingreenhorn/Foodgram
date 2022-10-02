@@ -75,6 +75,17 @@ jobs:
           privateKey: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
 
+      - name: Copy static docs
+        uses: garygrossgarten/github-action-scp@release
+        with:
+          local: docs
+          remote: foodgram_docs
+          rmRemote: true
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          privateKey: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+
       - name: Copy nginx conf
         uses: garygrossgarten/github-action-scp@release
         with:
