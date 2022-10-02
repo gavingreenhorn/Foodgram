@@ -47,7 +47,7 @@ jobs:
         with:
           push: true
           no-cache: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/foodgram_back:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:v1.0
           file: backend/Dockerfile
 
       - name: Push frontend
@@ -55,7 +55,7 @@ jobs:
         with:
           push: true
           no-cache: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/foodgram_front:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/foodgram_frontend:v1.0
           file: frontend/Dockerfile 
 
   move_data:
@@ -126,15 +126,15 @@ jobs:
             echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
             
             sudo docker-compose -f ${{ env.COMPOSE_FILE }} up -d
-            sudo docker cp foodgram_data/. food_backend:/app/static/
-            sudo docker exec food_backend python manage.py makemigrations
-            sudo docker exec food_backend python manage.py migrate --verbosity 2
-            sudo docker exec food_backend python manage.py collectstatic --no-input
-            sudo docker exec food_backend python manage.py loadcsv users FoodgramUser
-            sudo docker exec food_backend python manage.py loadcsv tags Tag
-            sudo docker exec food_backend python manage.py loadcsv ingredients Ingredient
-            sudo docker exec food_backend python manage.py make_relations
-            sudo docker exec food_backend python manage.py createsuperuser --no-input --username ${{ secrets.SU_NAME }} --email ${{ secrets.SU_EMAIL }}
+            sudo docker cp foodgram_data/. foodgram_backend:/app/static/
+            sudo docker exec foodgram_backend python manage.py makemigrations
+            sudo docker exec foodgram_backend python manage.py migrate --verbosity 2
+            sudo docker exec foodgram_backend python manage.py collectstatic --no-input
+            sudo docker exec foodgram_backend python manage.py loadcsv users FoodgramUser
+            sudo docker exec foodgram_backend python manage.py loadcsv tags Tag
+            sudo docker exec foodgram_backend python manage.py loadcsv ingredients Ingredient
+            sudo docker exec foodgram_backend python manage.py make_relations
+            sudo docker exec foodgram_backend python manage.py createsuperuser --no-input --username ${{ secrets.SU_NAME }} --email ${{ secrets.SU_EMAIL }}
   send_message:
     runs-on: ubuntu-latest
     needs: deploy
