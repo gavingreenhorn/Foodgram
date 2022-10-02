@@ -122,6 +122,7 @@ jobs:
             sudo docker system prune -f
 
             :> .env
+            echo DOCKER_USERNAME=${{secrets.DOCKER_USERNAME}} >> .env
             echo NGINX_HOST=${{ secrets.HOST }} >> .env
             echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
             echo DB_NAME=${{ secrets.DB_NAME }} >> .env
