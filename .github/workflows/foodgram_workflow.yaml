@@ -45,16 +45,16 @@ jobs:
       - name: Push backend
         uses: docker/build-push-action@v2
         with:
-          push: true
-          no-cache: true
+          #ush: true
+          #no-cache: true
           tags: ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:v1.0
           file: backend/Dockerfile
 
       - name: Push frontend
         uses: docker/build-push-action@v2
         with:
-          push: true
-          no-cache: true
+          #push: true
+          #no-cache: true
           tags: ${{ secrets.DOCKER_USERNAME }}/foodgram_frontend:v1.0
           file: frontend/Dockerfile 
 
@@ -149,12 +149,7 @@ jobs:
             sudo docker exec foodgram_backend python manage.py loadcsv tags Tag
             sudo docker exec foodgram_backend python manage.py loadcsv ingredients Ingredient
             sudo docker exec foodgram_backend python manage.py make_relations
-            sudo docker exec foodgram_backend 'python manage.py createsuperuser
-                --username ${{ secrets.SU_NAME }}
-                --first_name "admin"
-                --last_name "admin"
-                --email ${{ secrets.SU_EMAIL }}
-                --no-input'
+            sudo docker exec foodgram_backend python manage.py createsuperuser --username ${{ secrets.SU_NAME }} --first_name "admin" --last_name "admin" --email ${{ secrets.SU_EMAIL }} --no-input
   send_message:
     runs-on: ubuntu-latest
     needs: deploy
