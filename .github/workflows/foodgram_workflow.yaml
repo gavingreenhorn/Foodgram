@@ -111,10 +111,10 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           #passphrase: ${{ secrets.PASSPHRASE }}
-          #sudo docker volume rm $(sudo docker volume ls -qf dangling=true) 2>/dev/null
           script: |
             sudo docker-compose -f ${{ env.COMPOSE_FILE }} down
-            sudo docker system prune -аf
+            sudo docker volume rm $(sudo docker volume ls -qf dangling=true) 2>/dev/null
+            sudo docker system prune -f
 
             :> .env
             echo NGINX_HOST=${{ secrets.HOST }} >> .env
