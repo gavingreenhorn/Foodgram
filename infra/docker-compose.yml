@@ -3,7 +3,7 @@ services:
 
   foodgram_db:
     container_name: foodgram_db
-    image: gavingr/postgres:13.0-alpine
+    image: postgres:13.0-alpine
     volumes:
       - db_volume:/var/lib/postgresql/data/
     env_file:
@@ -23,7 +23,7 @@ services:
 
   foodgram_frontend:
     container_name: foodgram_frontend
-    image: foodgram_frontend:v1.0
+    image: gavingr/foodgram_frontend:v1.0
     # build:
     #   context: ../frontend
     #   dockerfile: Dockerfile
