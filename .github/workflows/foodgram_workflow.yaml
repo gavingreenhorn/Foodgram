@@ -126,8 +126,6 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
-          #passphrase: ${{ secrets.PASSPHRASE }}
-          #sudo docker volume rm $(sudo docker volume ls -qf dangling=true) 2>/dev/null
           script: |
             sudo docker-compose -f ${{ env.COMPOSE_FILE }} down
             sudo docker system prune -af
@@ -151,7 +149,12 @@ jobs:
             sudo docker exec foodgram_backend python manage.py loadcsv tags Tag
             sudo docker exec foodgram_backend python manage.py loadcsv ingredients Ingredient
             sudo docker exec foodgram_backend python manage.py make_relations
-            sudo docker exec foodgram_backend python manage.py createsuperuser --username ${{ secrets.SU_NAME }} --email ${{ secrets.SU_EMAIL }} --no-input
+            sudo docker exec foodgram_backend 'python manage.py createsuperuser
+                --username ${{ secrets.SU_NAME }}
+                --first_name "admin"
+                --last_name "admin"
+                --email ${{ secrets.SU_EMAIL }}
+                --no-input'
   send_message:
     runs-on: ubuntu-latest
     needs: deploy

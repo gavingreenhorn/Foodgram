@@ -38,7 +38,8 @@ class FoodgramUserManager(BaseUserManager):
             user.groups.add(Group.objects.get(name='admin'))
         return user
 
-    def create_superuser(self, username, email, password, **extra_fields):
+    def create_superuser(self, username, first_name, last_name,
+                         email, password, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)
@@ -49,8 +50,8 @@ class FoodgramUserManager(BaseUserManager):
             raise ValueError('Superuser must have is_superuser=True.')
         return self.create_user(
             username=username,
-            first_name=None,
-            last_name=None,
+            first_name=first_name,
+            last_name=last_name,
             email=email,
             password=password,
             **extra_fields)
