@@ -17,7 +17,7 @@ class Command(BaseCommand):
             for i in range(1, 4):
                 img_path = os.path.join(
                     settings.BASE_DIR,
-                    f'media/recipes/dummy_images/{i}.jpg')
+                    f'static/data/dummy_images/{i}.jpg')
                 recipe = Recipe.objects.create(
                     author_id=i, name=f"test_recipe_{i}",
                     cooking_time="40", image=get_image(img_path))
