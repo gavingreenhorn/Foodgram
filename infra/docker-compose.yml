@@ -10,7 +10,7 @@ services:
       ./.env
 
   foodgram_backend:
-    container_name: food_backend
+    container_name: foodgram_backend
     image: ${DOCKER_USERNAME}/foodgram_backend:v1.0
     restart: always
     volumes:
