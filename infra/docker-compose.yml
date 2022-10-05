@@ -24,9 +24,6 @@ services:
   foodgram_frontend:
     container_name: foodgram_frontend
     image: ${DOCKER_USERNAME}/foodgram_frontend:v1.0
-    # build:
-    #   context: ../frontend
-    #   dockerfile: Dockerfile
     volumes:
       - frontend/:/app/result_build/
 
@@ -35,9 +32,6 @@ services:
     image: nginx:1.19.3
     ports:
      - "80:80"
-    # extra_hosts:
-    #  - "host.docker.internal:host-gateway"
-    # network_mode: host
     volumes:
       - static_data:/var/html/static/
       - media_data:/var/html/media/
