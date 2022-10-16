@@ -143,9 +143,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'],
             permission_classes=[permissions.IsAuthenticated])
     def download_shopping_cart(self, request, *args, **kwargs):
-        ingredients = ((component.ingredient.name, component.amount)
-                       for recipe in self.get_queryset()
-                       for component in recipe.components.all())
+        ingredients = (
+            (component.ingredient.name,
+             component.amount,
+             component.ingredient.measurement_unit)
+            for recipe in self.get_queryset()
+            for component in recipe.components.all())
         response = HttpResponse(
             content_type='text/csv',
             headers={
