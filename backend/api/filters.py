@@ -13,15 +13,15 @@ class IngredientFilterSet(filters.FilterSet):
 
 class RecipeFilterSet(filters.FilterSet):
     author = filters.CharFilter(field_name='author__id', lookup_expr='exact')
-    # tags = filters.CharFilter(field_name='tags', lookup_expr='in')
-    tags = filters.CharFilter(method='tags_filter')
+    tags = filters.MultipleChoiceFilter(field_name='tags', lookup_expr='exact')
+    # tags = filters.CharFilter(method='tags_filter')
     is_favorited = filters.BooleanFilter(method='is_favorited_filter')
     is_in_shopping_cart = filters.BooleanFilter(
         method='is_in_shopping_cart_filter')
 
-    def tags_filter(self, queryset, name, value):
-        # tags = queryset.tags.values('slug')
-        return queryset.filter(tags__slug__contains=value)
+    # def tags_filter(self, queryset, name, value):
+    #     tags = queryset.tags.values('slug')
+    #     return queryset.exclude(tags__slug__exact=value)
 
     def is_favorited_filter(self, queryset, name, value):
         if value == 1:
@@ -39,4 +39,4 @@ class RecipeFilterSet(filters.FilterSet):
 
     class Meta:
         model = Recipe
-        fields = ('author',)
+        fields = ('author', 'tags')
