@@ -13,16 +13,16 @@ class IngredientFilterSet(filters.FilterSet):
 
 class RecipeFilterSet(filters.FilterSet):
     author = filters.CharFilter(field_name='author__id', lookup_expr='exact')
-    tags = filters.MultipleChoiceFilter(
-        field_name='tags__slug', lookup_expr='exact')
-    # tags = filters.CharFilter(method='tags_filter')
+    # tags = filters.MultipleChoiceFilter(
+    #     field_name='tags__slug', lookup_expr='exact')
+    tags = filters.CharFilter(method='tags_filter')
     is_favorited = filters.BooleanFilter(method='is_favorited_filter')
     is_in_shopping_cart = filters.BooleanFilter(
         method='is_in_shopping_cart_filter')
 
-    # def tags_filter(self, queryset, name, value):
-    #     tags = queryset.tags.values('slug')
-    #     return queryset.exclude(tags__slug__exact=value)
+    def tags_filter(self, queryset, name, value):
+        tags = self.request.query_params.getlist('tags')
+        return queryset.filter(tags__slug__in=tags)
 
     def is_favorited_filter(self, queryset, name, value):
         if value == 1:
