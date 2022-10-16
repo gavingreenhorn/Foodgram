@@ -157,7 +157,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             },
         )
         writer = csv.writer(response)
-        writer.writerow(('ingredient', 'amount'))
+        writer.writerow(('ingredient', 'amount', 'measurement unit'))
         for ingredient in ingredients:
             writer.writerow(ingredient)
         return response

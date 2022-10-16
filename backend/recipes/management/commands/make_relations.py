@@ -28,7 +28,7 @@ class Command(BaseCommand):
                 for ingredient in ingredients:
                     Component.objects.create(
                         recipe=recipe, ingredient=ingredient,
-                        amount=random.randint(10, 100))
+                        amount=random.randint(10, 400))
         except Exception as ex:
             raise CommandError(ex)
         else:
