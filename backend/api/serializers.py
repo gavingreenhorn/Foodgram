@@ -131,7 +131,7 @@ class SubscriptionSerializer(FoodgramUserSerializer):
     class Meta(FoodgramUserSerializer.Meta):
         fields = FoodgramUserSerializer.Meta.fields + ('recipes',)
         read_only_fields = (
-            'username', 'first_name', 'last_name', 'email')
+            'username', 'first_name', 'last_name', 'email', 'password')
 
     def to_representation(self, instance):
         request = self.context['request']
