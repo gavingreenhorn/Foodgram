@@ -1,4 +1,4 @@
-# Учебный проект "Foodgram"
+# Проект "Foodgram"
 
 - сохраняйте любимые рецепты
 - создавайте списки покупок
@@ -36,11 +36,3 @@ python manage.py make_relations
 ## Author
 
 Gavin Greenhorn
-
-## FOR REVIEWER
-
-- http://51.250.20.163/
-- gav-zlobin@yandex.ru
-- fakepwd123
-
-The server is running until the end of review
